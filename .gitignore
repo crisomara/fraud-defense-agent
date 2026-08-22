@@ -1,0 +1,33 @@
+# API keys and Kaggle Benchmarks Model Proxy credentials — never commit these
+.env
+.env.*
+!.env.example
+kaggle.json
+access_token
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# tau2-bench: cloned upstream framework (its own repo, not ours) plus its own .env
+tau2-bench/.env
+tau2-bench/.venv/
+tau2-bench/__pycache__/
+
+# Large/raw run outputs — summarized into reports, not committed wholesale
+results/baseline_runs/*.json
+results/hardened_runs/*.json
+!results/**/README.md
+
+# kaggle-benchmarks SDK's own local run/task persistence (store_run/store_task) --
+# full conversation transcripts, redundant with our own summarized results/*.json
+*.run.json
+*.task.json
+
+# OS files
+.DS_Store
+Thumbs.db
+tau2-bench/

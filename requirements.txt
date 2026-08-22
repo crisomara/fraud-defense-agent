@@ -1,0 +1,4 @@
+# Fraud Defense Agent dependencies
+kaggle-benchmarks
+kaggle
+pandas
