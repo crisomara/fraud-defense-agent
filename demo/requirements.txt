@@ -1,0 +1,8 @@
+# Demo-only dependencies. Deliberately separate from the top-level requirements.txt --
+# this app needs no Kaggle account, no API keys, and no kaggle-benchmarks SDK; it only
+# reads the already-generated scenarios/fraud_scenarios.json and imports agents/_common.py
+# and agents/policy.py directly (pure-stdlib modules, safe to import without pulling in
+# the Kaggle harness).
+streamlit>=1.38
+plotly>=5.24
+pandas>=2.0

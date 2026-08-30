@@ -53,7 +53,7 @@ real runs, not aspirationally.
 - [x] Data augmentation/preprocessing pipeline — scenario generator
 - [ ] MLOps practices: model versioning, experiment tracking — N/A, no models trained/versioned here; not force-checked (same reasoning as item 6)
 - [ ] Deployed as a REST API (Flask/FastAPI) — N/A, this project's "deployment" is a Kaggle Benchmark task, not a REST API; different shape by design, not a gap
-- [x] Demo app (Streamlit/Gradio) — N/A in the usual sense, but the interactive/human-playable angle is directly analogous to what Gert Labs' own benchmark offers; not built here, could be a future extension
+- [x] Demo app (Streamlit/Gradio) — `demo/app.py`, a Streamlit app with a human-playable version of the verification game itself (imports `agents/_common.py` directly, so it can't drift from real scoring; needs no API key or Kaggle auth) plus an interactive baseline-vs-hardened results dashboard
 - [x] Written explanation of a real-world application of the system — README "Business relevance"
 
 ## 9. Forward-Looking Signals (2025+)

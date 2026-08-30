@@ -14,6 +14,11 @@ for exactly what's reproduced from their published methodology versus our own
 construction, including the deliberate scope reduction (scripted caller instead of a
 second LLM) and why.
 
+**[Live demo](demo/README.md)** -- play the verification game yourself (no API key
+needed) and browse the baseline-vs-hardened results interactively. Run locally with
+`streamlit run demo/app.py`; see [`demo/README.md`](demo/README.md) for one-click
+deploy instructions.
+
 ---
 
 ## Architecture
@@ -190,6 +195,9 @@ agents/
   hardened_task.py          # trust-ledger defender (kbench task)
 scripts/
   run_comparison.py       # batch runner: both variants x scenario set, saves + summarizes
+demo/
+  app.py                  # Streamlit demo: play the game yourself, browse results
+  requirements.txt        # demo-only deps (streamlit, plotly) -- no Kaggle SDK needed
 results/
   baseline_runs/          # gitignored (large); per-model JSON result files
   hardened_runs/
