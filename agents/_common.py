@@ -4,6 +4,7 @@ scenario generator so the agent tasks don't need to import test-data-generation 
 these are the rules a real defender (or grader) needs, not the rules for authoring
 scenarios.
 """
+
 from __future__ import annotations
 
 PATHS = {
@@ -13,8 +14,12 @@ PATHS = {
 }
 
 NON_DISCLOSABLE = {
-    "ssn_last4", "security_answer", "card_last4", "account_number",
-    "balance", "transaction_history",
+    "ssn_last4",
+    "security_answer",
+    "card_last4",
+    "account_number",
+    "balance",
+    "transaction_history",
 }
 
 
