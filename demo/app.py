@@ -19,6 +19,7 @@ Three tabs:
 
 Run locally:  streamlit run demo/app.py   (from the repo root)
 """
+
 from __future__ import annotations
 
 import json
@@ -26,15 +27,15 @@ import random
 import sys
 from pathlib import Path
 
-import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from agents._common import PATHS, NON_DISCLOSABLE, stated_fields, satisfied_paths, contains_leak
-from agents.policy import POLICY_TEXT, HARDENED_ADDENDUM
+from agents._common import NON_DISCLOSABLE, PATHS, contains_leak, satisfied_paths, stated_fields
+from agents.policy import HARDENED_ADDENDUM, POLICY_TEXT
 
 SCENARIOS_PATH = ROOT / "scenarios" / "fraud_scenarios.json"
 RESULTS_PATH = Path(__file__).parent / "data" / "results_summary.json"
@@ -172,9 +173,7 @@ with st.expander("How to use this demo", expanded=False):
 """
     )
 
-tab_play, tab_results, tab_how = st.tabs(
-    ["Play the Defender", "Baseline vs Hardened", "How it works"]
-)
+tab_play, tab_results, tab_how = st.tabs(["Play the Defender", "Baseline vs Hardened", "How it works"])
 
 # ----------------------------------------------------------------------------------
 # Tab 1: Play the Defender
@@ -194,9 +193,7 @@ with tab_play:
         stat_cols[1].metric("Your pass rate", pass_pct)
         stat_cols[2].metric("Leaks committed", st.session_state.stats["leaked"])
 
-        mode = stat_cols[3].selectbox(
-            "Mode", ["Blind (real game)", "Practice (reveal caller type)"], key="game_mode"
-        )
+        mode = stat_cols[3].selectbox("Mode", ["Blind (real game)", "Practice (reveal caller type)"], key="game_mode")
 
         st.radio(
             "Next scenario should be...",
@@ -251,9 +248,7 @@ with tab_play:
 
             if can_reply:
                 with st.form(key=f"reply_form_{turn_idx}", clear_on_submit=True):
-                    reply_text = st.text_input(
-                        "Say something back (optional, checked live for policy leaks)"
-                    )
+                    reply_text = st.text_input("Say something back (optional, checked live for policy leaks)")
                     if st.form_submit_button("Send reply"):
                         st.session_state.player_replies[turn_idx - 1] = reply_text
                         st.rerun()
@@ -323,7 +318,13 @@ with tab_play:
                     if entry is None:
                         continue
                     if "passed" not in entry:
-                        rows.append({"Model": model_name, "Variant": variant_name, "Outcome": "Infrastructure error (rate-limited)"})
+                        rows.append(
+                            {
+                                "Model": model_name,
+                                "Variant": variant_name,
+                                "Outcome": "Infrastructure error (rate-limited)",
+                            }
+                        )
                     else:
                         outcome = "Pass" if entry["passed"] else "Fail"
                         if entry.get("leaked_field"):
@@ -394,7 +395,7 @@ with tab_results:
         if selected_models:
             with st.container(border=True):
                 delta_cols = st.columns(len(selected_models))
-                for col, m in zip(delta_cols, selected_models):
+                for col, m in zip(delta_cols, selected_models, strict=True):
                     b = aggregate_metrics(all_models[m]["baseline"])
                     h = aggregate_metrics(all_models[m]["hardened"])
                     bv = (b[metric_choice] or 0) if b else 0
@@ -418,21 +419,32 @@ with tab_results:
                     baseline_y.append((b[metric_choice] or 0) * 100 if b else 0)
                     hardened_y.append((h[metric_choice] or 0) * 100 if h else 0)
                 fig.add_bar(
-                    name="Baseline", x=selected_models, y=baseline_y, marker_color=COLOR_BASELINE,
-                    text=[f"{v:.0f}%" for v in baseline_y], textposition="outside",
+                    name="Baseline",
+                    x=selected_models,
+                    y=baseline_y,
+                    marker_color=COLOR_BASELINE,
+                    text=[f"{v:.0f}%" for v in baseline_y],
+                    textposition="outside",
                     hovertemplate="%{x}<br>Baseline: %{y:.0f}%<extra></extra>",
                 )
                 fig.add_bar(
-                    name="Hardened", x=selected_models, y=hardened_y, marker_color=COLOR_HARDENED,
-                    text=[f"{v:.0f}%" for v in hardened_y], textposition="outside",
+                    name="Hardened",
+                    x=selected_models,
+                    y=hardened_y,
+                    marker_color=COLOR_HARDENED,
+                    text=[f"{v:.0f}%" for v in hardened_y],
+                    textposition="outside",
                     hovertemplate="%{x}<br>Hardened: %{y:.0f}%<extra></extra>",
                 )
                 fig.update_layout(
-                    barmode="group", title=METRIC_LABELS[metric_choice],
+                    barmode="group",
+                    title=METRIC_LABELS[metric_choice],
                     yaxis=dict(title="%", range=[0, 115], gridcolor="#e1e0d9"),
-                    plot_bgcolor="#fcfcfb", paper_bgcolor="#fcfcfb",
+                    plot_bgcolor="#fcfcfb",
+                    paper_bgcolor="#fcfcfb",
                     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
-                    height=380, margin=dict(t=60, b=10, l=10, r=10),
+                    height=380,
+                    margin=dict(t=60, b=10, l=10, r=10),
                 )
                 st.plotly_chart(fig, width="stretch")
 
@@ -471,8 +483,11 @@ with tab_results:
             )
             st.caption("Click a row to see the scripted conversation and compare both variants.")
             event = st.dataframe(
-                df, hide_index=True, width="stretch",
-                on_select="rerun", selection_mode="single-row",
+                df,
+                hide_index=True,
+                width="stretch",
+                on_select="rerun",
+                selection_mode="single-row",
             )
 
             if event.selection.rows:
@@ -486,9 +501,7 @@ with tab_results:
 
                 cmp_cols = st.columns(2)
                 for i, variant_name in enumerate(("baseline", "hardened")):
-                    entry = next(
-                        (e for e in all_models[drill_model][variant_name] if e["scenario_id"] == sel_id), None
-                    )
+                    entry = next((e for e in all_models[drill_model][variant_name] if e["scenario_id"] == sel_id), None)
                     with cmp_cols[i], st.container(border=True):
                         st.markdown(f"**{variant_name.capitalize()}**")
                         if entry is None:
@@ -575,7 +588,7 @@ did the agent ever leak a protected field? No LLM judge, no ambiguity.
         sandbox_leak = contains_leak(agent_says, sample_record)
 
         path_cols = st.columns(3)
-        for col, path_name in zip(path_cols, PATHS):
+        for col, path_name in zip(path_cols, PATHS, strict=True):
             done = path_name in sandbox_satisfied
             col.badge(path_name, color="green" if done else "gray")
 
@@ -612,7 +625,10 @@ did the agent ever leak a protected field? No LLM judge, no ambiguity.
     seen = {}
     for s in scenarios:
         if s["caller_type"] == "thief" and s["attack_style"] not in seen:
-            attack_line = next((t for t in s["scripted_turns"] if s["attack_style"] != "plain" and len(t) > 60), s["scripted_turns"][-2])
+            attack_line = next(
+                (t for t in s["scripted_turns"] if s["attack_style"] != "plain" and len(t) > 60),
+                s["scripted_turns"][-2],
+            )
             seen[s["attack_style"]] = attack_line
     style_notes = {
         "plain": ("gray", "Persistence alone, no fabricated authority, just pressure."),
@@ -628,13 +644,19 @@ did the agent ever leak a protected field? No LLM judge, no ambiguity.
     st.subheader("Pipeline")
     with st.container(border=True):
         steps = [
-            ("1. Generate", "scenarios/generator.py builds seeded scenarios: records, paths, scripted caller dialogue."),
-            ("2. Run", "scripts/run_comparison.py sends each scenario to both agent variants via Kaggle's Model Proxy."),
+            (
+                "1. Generate",
+                "scenarios/generator.py builds seeded scenarios: records, paths, scripted caller dialogue.",
+            ),
+            (
+                "2. Run",
+                "scripts/run_comparison.py sends each scenario to both agent variants via Kaggle's Model Proxy.",
+            ),
             ("3. Score", "agents/_common.py mechanically checks path completion and leaks. No LLM judge."),
             ("4. Summarize", "results/*_runs/*.json -> results/README.md and demo/data/results_summary.json."),
         ]
         step_cols = st.columns(len(steps))
-        for col, (title, desc) in zip(step_cols, steps):
+        for col, (title, desc) in zip(step_cols, steps, strict=True):
             with col:
                 st.markdown(f"**{title}**")
                 st.caption(desc)
