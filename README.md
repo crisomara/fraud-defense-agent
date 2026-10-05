@@ -216,7 +216,7 @@ Every push and pull request runs two GitHub Actions workflows:
 - **CI** (`.github/workflows/ci.yml`): `ruff check` and `ruff format --check`; `pytest` with coverage on Python 3.11 and 3.12 (the coverage report is uploaded as a build artifact); and a boot check that starts the Streamlit demo from `demo/requirements.txt` and waits for its health endpoint.
 - **Security** (`.github/workflows/security.yml`, also weekly): gitleaks secret scanning over the full history, `pip-audit` on both `requirements.txt` and `demo/requirements.txt`, CodeQL analysis for Python, dependency review on pull requests, and actionlint on the workflow files.
 
-CI has no Kaggle credentials and never calls a model. The tests cover the mechanical scoring rules, the scenario generator (including a check that the committed `scenarios/fraud_scenarios.json` is exactly what the generator produces, and that every scripted dialogue grades to its expected outcome), the demo data builder and a render check of the demo app. The third-party `tau2-bench/` clone is not part of the repo and CI does not use it.
+CI has no Kaggle credentials and never calls a model. The tests cover the mechanical scoring rules, the scenario generator (including a check that the committed `scenarios/fraud_scenarios.json` is exactly what the generator produces, and that every scripted dialogue grades to its expected outcome), both Kaggle Benchmark tasks run end to end against a scripted fake model (decision parsing, leak detection, the hardened agent's ledger), the demo data builder and a render check of the demo app. The third-party `tau2-bench/` clone is not part of the repo and CI does not use it.
 
 ```
 pip install -r requirements.txt -r demo/requirements.txt -r requirements-dev.txt
