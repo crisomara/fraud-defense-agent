@@ -1,5 +1,7 @@
 # Fraud Defense Agent
 
+[![CI](https://github.com/crisomara/fraud-defense-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/crisomara/fraud-defense-agent/actions/workflows/ci.yml) [![Security](https://github.com/crisomara/fraud-defense-agent/actions/workflows/security.yml/badge.svg)](https://github.com/crisomara/fraud-defense-agent/actions/workflows/security.yml)
+
 An independent recreation and extension of **Gert Labs' Adversarial Customer Service**
 benchmark (live on Kaggle Benchmarks, `kaggle.com/benchmarks/gert-labs/adversarial-customer-service`)
 — a two-sided security game where a bank support agent must verify a caller's identity
@@ -206,6 +208,22 @@ tau2-bench/               # cloned upstream framework -- original project direct
                            # the pivot to Gert Labs' real, live benchmark; see git history
 CHECKLIST.md               # portfolio-readiness checklist for this project
 ```
+
+## CI
+
+Every push and pull request runs two GitHub Actions workflows:
+
+- **CI** (`.github/workflows/ci.yml`): `ruff check` and `ruff format --check`; `pytest` with coverage on Python 3.11 and 3.12 (the coverage report is uploaded as a build artifact); and a boot check that starts the Streamlit demo from `demo/requirements.txt` and waits for its health endpoint.
+- **Security** (`.github/workflows/security.yml`, also weekly): gitleaks secret scanning over the full history, `pip-audit` on both `requirements.txt` and `demo/requirements.txt`, CodeQL analysis for Python, dependency review on pull requests, and actionlint on the workflow files.
+
+CI has no Kaggle credentials and never calls a model. The tests cover the mechanical scoring rules, the scenario generator (including a check that the committed `scenarios/fraud_scenarios.json` is exactly what the generator produces, and that every scripted dialogue grades to its expected outcome), the demo data builder and a render check of the demo app. The third-party `tau2-bench/` clone is not part of the repo and CI does not use it.
+
+```
+pip install -r requirements.txt -r demo/requirements.txt -r requirements-dev.txt
+pytest
+```
+
+Dependabot opens grouped weekly updates for both pip requirement files and GitHub Actions.
 
 ## License
 
