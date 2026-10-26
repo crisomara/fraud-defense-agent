@@ -4,5 +4,5 @@
 # and agents/policy.py directly (pure-stdlib modules, safe to import without pulling in
 # the Kaggle harness).
 streamlit>=1.38
-plotly>=5.24
+plotly>=7.1.0
 pandas>=2.0
