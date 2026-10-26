@@ -8,6 +8,7 @@ Re-run this after any new `python -m scripts.run_comparison` against a new model
 the demo's results tab is fully data-driven off this file, so a new model just shows
 up, no app.py changes needed.
 """
+
 from __future__ import annotations
 
 import json

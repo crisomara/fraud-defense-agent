@@ -1,0 +1,15 @@
+target-version = "py311"
+line-length = 120
+# tau2-bench/ is a gitignored local clone of a third-party repo, not part of this project.
+extend-exclude = ["tau2-bench"]
+
+[lint]
+# pycodestyle errors/warnings, pyflakes, import sorting, bugbear.
+select = ["E", "W", "F", "I", "B"]
+# E501: the formatter owns line length; long prompt and policy strings are deliberate.
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+# These entrypoints put the repo root on sys.path before importing project modules.
+"demo/app.py" = ["E402"]
+"scripts/run_comparison.py" = ["E402"]

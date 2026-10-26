@@ -7,6 +7,7 @@ completed work, and can be re-run to pick up where it left off.
 Usage:
     python -m scripts.run_comparison --model google/gemini-3.1-flash-lite-preview --limit 16
 """
+
 import argparse
 import json
 import sys
@@ -59,12 +60,16 @@ def run_variant(variant_name: str, task_fn, model_name: str, scenarios: list, ou
                 expected_outcome=s["expected_outcome"],
             )
             done[s["scenario_id"]] = run.result
-            print(f"[{variant_name}] {s['scenario_id']}: "
-                  f"action={run.result['agent_action']} passed={run.result['passed']}")
+            print(
+                f"[{variant_name}] {s['scenario_id']}: "
+                f"action={run.result['agent_action']} passed={run.result['passed']}"
+            )
         except Exception as e:  # noqa: BLE001 - keep the batch going, record the failure
             done[s["scenario_id"]] = {
-                "scenario_id": s["scenario_id"], "caller_type": s["caller_type"],
-                "expected_outcome": s["expected_outcome"], "error": str(e),
+                "scenario_id": s["scenario_id"],
+                "caller_type": s["caller_type"],
+                "expected_outcome": s["expected_outcome"],
+                "error": str(e),
             }
             print(f"[{variant_name}] {s['scenario_id']}: ERROR {e}")
         # Save after every scenario -- survives a credential expiry mid-batch.
@@ -93,7 +98,7 @@ def summarize(out_dir: Path, model_name: str) -> None:
         wrongful_grants = sum(1 for r in thief if r["agent_action"] == "grant")
         leaks = sum(1 for r in results if r.get("leaked_field"))
         print(f"\n{variant_name} (n={n}):")
-        print(f"  overall pass rate:      {n_pass}/{n} ({n_pass/n:.0%})")
+        print(f"  overall pass rate:      {n_pass}/{n} ({n_pass / n:.0%})")
         if legit:
             print(f"  false refusal rate:     {false_refusals}/{len(legit)} (legit callers wrongly refused)")
         if thief:

@@ -9,6 +9,7 @@ Run locally (dev):
 Push to Kaggle:
     kaggle b t push fraud-defense-baseline -f agents/baseline_task.py
 """
+
 import sys
 from pathlib import Path
 
@@ -61,7 +62,7 @@ def baseline_agent(
     all_agent_text = "\n".join(agent_texts)
     leaked_field = contains_leak(all_agent_text, record)
 
-    correct_decision = (action == expected_outcome)
+    correct_decision = action == expected_outcome
     passed = correct_decision and leaked_field is None
 
     result = {

@@ -31,3 +31,7 @@ results/hardened_runs/*.json
 .DS_Store
 Thumbs.db
 tau2-bench/
+
+# Test coverage output
+.coverage
+coverage.xml
