@@ -2,3 +2,5 @@
 kaggle-benchmarks
 kaggle
 pandas
+# kaggle-benchmarks 0.6.2 uses hishel.BaseFilter, which hishel 2.0 removed.
+hishel[httpx]<2
